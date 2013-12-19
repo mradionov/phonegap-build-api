@@ -3,6 +3,15 @@
 namespace PhonegapBuildApi;
 
 /**
+ * TODO:
+ * 1) Test key methods
+ * 2) Documentation
+ * 
+ * PHP library to interact with Phonegap Build API
+ * 
+ * The latest version of Phonegap for the time when library was developed - 3.1.0
+ * Contains all methods the a presented in this version of API
+ * 
  * Requires CURL PHP extension to be installed and enabled
  * 
  * Original API documentation: 
@@ -18,6 +27,8 @@ namespace PhonegapBuildApi;
  */
 class PhonegapBuildApi
 {
+    const IOS = 'ios';
+    const ANDROID = 'android';
 
     /**
      * Api Endpoint
@@ -38,7 +49,7 @@ class PhonegapBuildApi
      *
      * @var array
      */
-    protected $codes = array(200, 302);
+    protected $codes = array(200, 201, 202, 302);
 
     /**
      * Username
@@ -89,8 +100,8 @@ class PhonegapBuildApi
      * If using username and password, pass both values to constructor;
      * otherwise, if using token, - pass single token value, leave second one empty
      *
-     * @param string $usernameOrToken
-     * @param string $password
+     * @param string $usernameOrToken - username of token
+     * @param string $password - password, if username passed as first arg
      */
     public function __construct($usernameOrToken = '', $password = '')
     {
@@ -110,8 +121,8 @@ class PhonegapBuildApi
     /**
      * Create new instance statically
      *
-     * @param string $usernameOrToken
-     * @param string $password
+     * @param string $usernameOrToken - username of token
+     * @param string $password - password, if username passed as first arg
      *
      * @return PhonegapBuildApi
      */
@@ -121,7 +132,9 @@ class PhonegapBuildApi
     }
 
     /**
-     * Set username and password for authentication
+     * Set username and password for authentication, if set
+     *
+     * Token will be cleared
      *
      * @param string $username
      * @param string $password
@@ -132,11 +145,14 @@ class PhonegapBuildApi
     {
         $this->username = $username;
         $this->password = $password;
+        $this->token = '';
         return $this;
     }
 
     /**
      * Set token for authentication
+     *
+     * Username and password will be cleared, if set
      *
      * @param string $token
      *
@@ -145,6 +161,8 @@ class PhonegapBuildApi
     public function setToken($token)
     {
         $this->token = $token;
+        $this->username = '';
+        $this->password = '';
         return $this;
     }
 
@@ -157,7 +175,7 @@ class PhonegapBuildApi
      *
      * @link({docs_read_api}, #_get_https_build_phonegap_com_api_v1_me)
      *
-     * @return array
+     * @return mixed: array on success | false on fail
      */
     public function getProfile()
     {
@@ -169,7 +187,7 @@ class PhonegapBuildApi
      *
      * @link({docs_api_read}, #_get_https_build_phonegap_com_api_v1_apps)
      *
-     * @return array
+     * @return mixed: array on success | false on fail
      */
     public function getApplications()
     {
@@ -181,9 +199,9 @@ class PhonegapBuildApi
      *
      * @link({docs_api_read}, #_get_https_build_phonegap_com_api_v1_apps_id)
      * 
-     * @param mixed $applicationId
+     * @param mixed: int | string $applicationId
      *
-     * @return array
+     * @return mixed: array on success | false on fail
      */
     public function getApplication($applicationId)
     {
@@ -195,9 +213,9 @@ class PhonegapBuildApi
      *
      * @link({docs_api_read}, #_get_https_build_phonegap_com_api_v1_apps_id_icon)
      *
-     * @param mixed $applicationId
+     * @param mixed: int | string $applicationId
      *
-     * @return array
+     * @return mixed: array on success | false on fail
      */
     public function getApplicationIcon($applicationId)
     {
@@ -209,10 +227,10 @@ class PhonegapBuildApi
      *
      * @link({docs_api_read}, #_get_https_build_phonegap_com_api_v1_apps_id_platform)
      * 
-     * @param mixed $applicationId
-     * @param string $platform
+     * @param mixed: int | string $applicationId
+     * @param string $platform - platform name ('android', 'ios', ...')
      *
-     * @return array
+     * @return mixed: array on success | false on fail
      */
     public function downloadApplicationPlatform($applicationId, $platform)
     {
@@ -224,7 +242,7 @@ class PhonegapBuildApi
      *
      * @link({docs_api_read}, #_get_https_build_phonegap_com_api_v1_keys)
      *
-     * @return array
+     * @return mixed: array on success | false on fail
      */
     public function getKeys()
     {
@@ -236,9 +254,9 @@ class PhonegapBuildApi
      *
      * @link({docs_api_read}, #_get_https_build_phonegap_com_api_v1_keys_platform)
      *
-     * @param string $platform
+     * @param string $platform - platform name ('android', 'ios', ...')
      *
-     * @return array
+     * @return mixed: array on success | false on fail
      */
     public function getKeysPlatform($platform)
     {
@@ -250,10 +268,10 @@ class PhonegapBuildApi
      *
      * @link({docs_api_read}, #_get_https_build_phonegap_com_api_v1_keys_platform_id)
      *
-     * @param string $platform
-     * @param mixed $keyId
+     * @param string $platform - platform name ('android', 'ios', ...')
+     * @param mixed: int | string $keyId
      *
-     * @return array
+     * @return mixed: array on success | false on fail
      */
     public function getKeyPlatform($platform, $keyId)
     {
@@ -264,16 +282,400 @@ class PhonegapBuildApi
     // Write API methods
     // ------------------------------------
 
-    // public function createApplication($options = array())
-    // {
-    //     $options['title'] = 'Some test';
-    //     $options['create_method'] = 'remote_repo';
-    //     $options['repo'] = 'https://github.com/micrddrgn/phonegap-start.git';
+    /**
+     * Create application
+     *
+     * @link({docs_api_write}, #_post_https_build_phonegap_com_api_v1_apps)
+     *
+     * @param array $options - additional options, see details in API docs
+     *
+     * @return mixed: array on success | false on fail
+     */
+    public function createApplication($options = array())
+    {
+        // duplicating the default values from API documentation
+        $defaults = array(
+            'title' => 'Phonegap Application',
+            'package' => 'com.phonegap.www',
+            'version' => '0.0.1',
+            'description' => '',
+            'debug' => false,
+            // don't set defaults for keys, as it will throw an error
+            // if you want to set keys just pass them as options
+            // 'keys' => array(),
+            'private' => true,
+            'phonegap_version' => '3.1.0',
+            'hydrates' => false,
+        );
 
-    //     $result = $this->request('apps', $options, 'POST');
+        $options = array_merge($defaults, $options);
 
-    //     return $result;
-    // }
+        return $this->request('apps', 'post', $options);
+    }
+
+    /**
+     * Create application using GitHub repository
+     *
+     * @link({docs_api_write}, #_post_https_build_phonegap_com_api_v1_apps)
+     *
+     * @param string $source - GitHub repository
+     * @param array $options - additional options, see details in API docs
+     *
+     * @return mixed: array on success | false on fail
+     */
+    public function createApplicationFromRepo($source, $options = array())
+    {
+        $options = array_merge($options, array(
+            'create_method' => 'remote_repo',
+            'repo' => $source,
+        ));
+
+        return $this->createApplication($options);
+    }
+
+    /**
+     * Create application from file
+     *
+     * @link({docs_api_write}, #_post_https_build_phonegap_com_api_v1_apps)
+     *
+     * @param string $source - file path
+     * @param array $options - additional options, see details in API docs
+     *
+     * @return mixed: array on success | false on fail
+     */
+    public function createApplicationFromFile($source, $options = array())
+    {
+        $options = array_merge($options, array(
+            'create_method' => 'file',
+            'file' => $this->file($source),
+        ));
+        
+        return $this->createApplication($options);
+    }
+
+    /**
+     * Update application
+     *
+     * @link({docs_api_write}, #_put_https_build_phonegap_com_api_v1_apps_id)
+     * 
+     * @param mixed: int | string $applicationId
+     * @param array $options - additional options, see details in API docs
+     *
+     * @return mixed: array on success | false on fail
+     */
+    public function updateApplication($applicationId, $options = array())
+    {
+        return $this->request(array('apps', $applicationId), 'put', $options);
+    }
+
+    /**
+     * Update application from GitHub repository
+     *
+     * No need to pass repository as it was set when application had been created
+     *
+     * @link({docs_api_write}, #_put_https_build_phonegap_com_api_v1_apps_id)
+     *
+     * @param mixed: int | string $applicationId
+     * @param array $options - additional options, see details in API docs
+     *
+     * @return mixed: array on success | false on fail
+     */
+    public function updateApplicationFromRepo($applicationId, $options = array())
+    {
+        $options = array_merge($options, array(
+            'pull' => true,
+        ));
+
+        return $this->updateApplication($applicationId, $options);
+    }
+
+    /**
+     * Update application from file
+     *
+     * @link({docs_api_write}, #_put_https_build_phonegap_com_api_v1_apps_id)
+     *
+     * @param mixed: int | string $applicationId
+     * @param string $source - file path
+     * @param array $options - additional options, see details in API docs
+     *
+     * @return mixed: array on success | false on fail
+     */
+    public function updateApplicationFromFile($applicationId, $source, $options = array())
+    {
+        $options = array_merge($options, array(
+            'file' => $this->file($source),
+        ));
+
+        return $this->updateApplication($applicationId, $options);
+    }
+
+    /**
+     * Update application icon
+     *
+     * @link({docs_api_write}, #_post_https_build_phonegap_com_api_v1_apps_id_icon)
+     *
+     * @param mixed: int | string $applicationId
+     * @param string $source - png icon file path
+     *
+     * @return mixed: array on success | false on fail
+     */
+    public function updateApplicationIcon($applicationId, $source)
+    {
+        $options['icon'] = $this->file($source);
+
+        return $this->request(array('apps', $applicationId, 'icon'), 'post', $options);
+    }
+
+    /**
+     * Start building application
+     *
+     * @link({docs_api_write}, #_post_https_build_phonegap_com_api_v1_apps_id_build)
+     *
+     * @param mixed: int | string $applicationId
+     * @param array | string $platforms - platform name ('android', 'ios', ...')
+     *
+     * @return mixed: array on success | false on fail
+     */
+    public function buildApplication($applicationId, $platforms = array())
+    {
+        $options = array();
+        if (! empty($platforms)) {
+            if (! is_array($platforms)) {
+                $platforms = array($platforms);
+            }
+            $options['platforms'] = $platforms;
+        }
+
+        return $this->request(array('apps', $applicationId, 'build'), 'post', $options);
+    }
+
+    /**
+     * Start building application for specified platform
+     *
+     * @link({docs_api_write}, #_post_https_build_phonegap_com_api_v1_apps_id_build_platform)
+     *
+     * @param mixed: int | string $applicationId
+     * @param mixed: string | array $platform - platform name ('android', 'ios', ...')
+     *
+     * @return mixed: array on success | false on fail
+     */
+    public function buildApplicationPlatform($applicationId, $platform)
+    {
+        return $this->request(array('apps', $applicationId, 'build', $platform), 'post');
+    }
+
+    /**
+     * Add collaborator
+     *
+     * @link({docs_api_write}, #_post_https_build_phonegap_com_api_v1_apps_id_collaborators)
+     *
+     * @param mixed: int | string $applicationId
+     * @param array $options - additional options, see details in API docs
+     *
+     * @return mixed: array on success | false on fail
+     */
+    public function addCollaborator($applicationId, $options = array())
+    {
+        $defaults = array(
+            'email' => '',
+            'role' => 'tester', // 'dev'
+        );
+
+        $options = array_merge($defaults, $options);
+
+        return $this->request(array('apps', $applicationId, 'collaborators'), 'post', $options);
+    }
+
+    /**
+     * Update collaborator
+     *
+     * @link({docs_api_write}, #_put_https_build_phonegap_com_api_v1_apps_id_collaborators_id)
+     *
+     * @param mixed: int | string $applicationId
+     * @param mixed: int | string $collaboratorId
+     * @param array $options- additional options, see details in API docs
+     *
+     * @return mixed: array on success | false on fail
+     */
+    public function updateCollaborator($applicationId, $collaboratorId, $options = array())
+    {
+        $defaults = array(
+            'role' => 'tester', // 'dev'
+        );
+
+        $options = array_merge($defaults, $options);
+
+        return $this->request(array('apps', $applicationId, 'collaborators', $collaboratorId), 'put', $options);
+    }
+
+    /**
+     * Add key for platform
+     *
+     * Better use function for specified platforms, cause it has some values restrictions
+     *
+     * @link({docs_api_write}, #_post_https_build_phonegap_com_api_v1_keys_platform)
+     *
+     * @param string $platform - platform name ('android', 'ios', ...')
+     * @param array $options - additional options, see details in API docs
+     *
+     * @return mixed: array on success | false on fail
+     */
+    public function addKeyPlatform($platform, $options = array())
+    {
+        return $this->request(array('keys', $platform), 'post', $options);
+    }
+
+    /**
+     * Add key for android
+     *
+     * @link({docs_api_write}, #_post_https_build_phonegap_com_api_v1_keys_platform)
+     *
+     * @param string $title - key title
+     * @param string $keystore - keystore file
+     * @param array $options - additional options, see details in API docs
+     *
+     * @return mixed: array on success | false on fail
+     */
+    public function addKeyAndroid($title, $keystore, $options = array())
+    {
+        $defaults = array(
+            'title' => $title,
+            'keystore' => $this->file($keystore),
+            // 'alias' => 'release',
+            // 'key_pw' => '',
+            // 'keystore_pw' => '',
+        );
+
+        $options = array_merge($defaults, $options);
+
+        return $this->addKeyPlatform(self::ANDROID, $options);
+    }
+
+    /**
+     * Add key for ios
+     *
+     * @link({docs_api_write}, #_post_https_build_phonegap_com_api_v1_keys_platform)
+     *
+     * @param string $title - key title
+     * @param string $cert - p12 certificate file
+     * @param string $profile - mobileprovision file
+     * @param array $options - additional options, see details in API docs
+     *
+     * @return mixed: array on success | false on fail
+     */
+    public function addKeyIos($title, $cert, $profile, $options = array())
+    {
+        $defaults = array(
+            'title' => $title,
+            'cert' => $this->file($cert),
+            'profile' => $this->file($profile),
+            // 'password' => '',
+        );
+
+        $options = array_merge($defaults, $options);
+
+        return $this->addKeyPlatform(self::IOS, $options);
+    }
+
+    /**
+     * Update / unlock key for platform
+     *
+     * Better use function for specified platforms, cause it has some values restrictions
+     *
+     * @link({docs_api_write}, #_put_https_build_phonegap_com_api_v1_keys_platform)
+     *
+     * @param string $platform
+     * @param mixed: int | string $keyId
+     * @param array $options - additional options, see details in API docs
+     *
+     * @return mixed: array on success | false on fail
+     */
+    public function updateKeyPlatform($platform, $keyId, $options = array())
+    {
+        return $this->request(array('keys', $platform, $keyId), 'put', $options);
+    }
+
+    /**
+     * Update / unlock key for ios
+     *
+     * @link({docs_api_write}, #_put_https_build_phonegap_com_api_v1_keys_platform)
+     *
+     * @param mixed: int | string $keyId
+     * @param string $password - key password
+     *
+     * @return mixed: array on success | false on fail
+     */
+    public function updateKeyIos($keyId, $password)
+    {
+        $options['password'] = $password;
+
+        return $this->updateKeyPlatform(self::IOS, $keyId, $options);
+    }
+
+    /**
+     * Update / unlock key for android
+     *
+     * @link({docs_api_write}, #_put_https_build_phonegap_com_api_v1_keys_platform)
+     *
+     * @param mixed: int | string $keyId
+     * @param string $keyPw - key password
+     * @param string $keystorePw - keystore password
+     *
+     * @return mixed: array on success | false on fail
+     */
+    public function updateKeyAndroid($keyId, $keyPw, $keystorePw)
+    {
+        $options = array(
+            'key_pw' => $keyPw,
+            'keystore_pw' => $keystorePw,
+        );
+
+        return $this->updateKeyPlatform(self::ANDROID, $keyId, $options);
+    }
+
+    /**
+     * Delete application
+     *
+     * @link({docs_api_write}, #_delete_https_build_phonegap_com_api_v1_apps_id)
+     *
+     * @param mixed: int | string $applicationId
+     *
+     * @return mixed: array on success | false on fail
+     */
+    public function deleteApplication($applicationId)
+    {
+        return $this->request(array('apps', $applicationId), 'delete');
+    }
+
+    /**
+     * Delete collaborator
+     *
+     * @link({docs_api_write}, #_delete_https_build_phonegap_com_api_v1_apps_id_collaborators_id)
+     *
+     * @param mixed: int | string $applicationId
+     * @param mixed: int | string $collaboratorId
+     *
+     * @return mixed: array on success | false on fail
+     */
+    public function deleteCollaborator($applicationId, $collaboratorId)
+    {
+        return $this->request(array('apps', $applicationId, 'collaborators', $collaboratorId), 'delete');
+    }
+
+    /**
+     * Delete key for platform
+     *
+     * @link({docs_api_write}, #_delete_https_build_phonegap_com_api_v1_keys_platform_id)
+     *
+     * @param string $platform - platform name ('android', 'ios', ...')
+     * @param mixed: int | string $keyId
+     *
+     * @return mixed: array on success | false on fail
+     */
+    public function deleteKeyPlatform($platform, $keyId)
+    {
+        return $this->request(array('keys', $platform, $keyId), 'delete');
+    }
 
     // ------------------------------------
     // Public utility methods
@@ -281,8 +683,6 @@ class PhonegapBuildApi
 
     /**
      * Check whether last request was successful
-     *
-     * @param mixed $result - pass result while check to shorten
      * 
      * @return bool
      */
@@ -328,6 +728,39 @@ class PhonegapBuildApi
     }
 
     /**
+     * Return file path for curl
+     *
+     * @param string $source
+     *
+     * @return string
+     */
+    protected function file($source)
+    {
+        return '@' . realpath($source);
+    }
+
+    /**
+     * Represent associative array as string
+     *
+     * @param array $array
+     * @param string $keyValueSeparator
+     * @param string $pairSeparator
+     *
+     * @return string
+     */
+    protected function assocToString($array, $keyValueSeparator = ' - ', $pairSeparator = '; ')
+    {
+        if (! is_array($array)) {
+            return print_r($array, true);
+        }
+
+        foreach ($array as $key => &$value) {
+            $value = $key . $keyValueSeparator . $value;
+        }
+        return implode($pairSeparator, $array);
+    }
+
+    /**
      * Perform request to api using CURL
      *
      * @param mixed $uri - may be uri string or array with uri parts
@@ -336,12 +769,16 @@ class PhonegapBuildApi
      *
      * @return array (if succeeded) | boolean (false, if failed)
      */
-    protected function request($uri, $method = 'GET', $options = array())
+    protected function request($uri, $method = 'get', $options = array())
     {
         $this->clear();
 
         if (! in_array(strtolower($method), $this->methods)) {
-            return $this->setError('Unknow request method: ' . $method);
+            return $this->setError('Unknown request method: ' . $method);
+        }
+
+        if (! ($this->token || ($this->username && $this->password))) {
+            return $this->setError('Please provide token or username and password');
         }
 
         // if uri is passed as array, create uri string from uri parts
@@ -352,26 +789,48 @@ class PhonegapBuildApi
         // api request url
         $url = $this->endpoint . $uri;
 
-        // if using token - add it to final request url
+        $handle = curl_init();
+
         if ($this->token) {
+            // if using token - add it to final request url
             $url .= '?auth_token=' . $this->token;
+        } else {
+            // if usting username and password - pass then as curl option
+            curl_setopt($handle, CURLOPT_USERPWD, $this->username . ':' . $this->password);
         }
 
-        $handle = curl_init();
         curl_setopt($handle, CURLOPT_URL, $url);
         curl_setopt($handle, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($handle, CURLOPT_CUSTOMREQUEST, strtoupper($method));
+        curl_setopt($handle, CURLOPT_HTTPHEADER, array(
+            'Content-type: multipart/form-data;',
+        ));
+
+        // if request has additional options - add them to request
         if (! empty($options)) {
-            curl_setopt($handle, CURLOPT_POSTFIELDS, array(
-                'data' => json_encode($options),
-            ));
+
+            // extract files, pass them separately
+            $files = array();
+            foreach ($options as $key => $value) {
+                if (! empty($value) && $value[0] === '@') {
+                    $files[$key] = $value;
+                    unset($options[$key]);
+                }
+            }
+
+            $data = $files;
+
+            if (! empty($options)) {
+                // original API requires data to be in json format
+                $data = array_merge($data, array(
+                    'data' => json_encode($options),
+                ));
+            }
+
+            curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
         }
 
         $response = curl_exec($handle);
-
-        // curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-        // curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
-        // curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
         
         if (curl_errno($handle)) {
             $this->setError(curl_error($handle));
@@ -379,6 +838,7 @@ class PhonegapBuildApi
             return false;
         }
 
+        // get httd code to identify if request was successful
         $httpcode = curl_getinfo($handle, CURLINFO_HTTP_CODE);
         $this->success = in_array($httpcode, $this->codes);
 
@@ -386,10 +846,11 @@ class PhonegapBuildApi
 
         $decoded = json_decode($response, true);
 
-        if (isset($decoded['error']) && ! empty($decoded['error'])) {
-            $error = is_array($decoded['error'])
-                ? http_build_query($decoded['error'], '', ';')
-                : $decoded['error'];
+        // request may be successful, but also can have errors, for example, about keys
+        if (isset($decoded['error']) && $error = $decoded['error']) {
+            if (is_array($error)) {
+                $error = $this->assocToString($error);
+            }
             $this->setError($error);
         }
 
