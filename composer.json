@@ -1,5 +1,7 @@
 {
-    "name": "micrddrgn/test-library",
+    "name": "micrddrgn/phonegap-build-api",
+    "description": "PHP library to interact with Phonegap Build API",
+    "type": "library",
     "keywords": [
         "phonegap",
         "build",
@@ -9,9 +11,14 @@
     "license": "MIT",
     "authors": [
         {
-            "name": "micrddrgn"
+            "name": "Michael Radionov",
+            "email": "micrddrgn@gmail.com"
         }
     ],
+    "support": {
+        "source": "https://github.com/micrddrgn/phonegap-build-api",
+        "issues": "https://github.com/micrddrgn/phonegap-build-api/issues"
+    },
     "autoload": {
         "psr-0": { "PhonegapBuildApi\\": "src/" }
     }
