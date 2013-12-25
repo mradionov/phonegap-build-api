@@ -19,6 +19,8 @@
         "issues": "https://github.com/micrddrgn/phonegap-build-api/issues"
     },
     "autoload": {
-        "psr-0": { "PhonegapBuildApi\\": "src/" }
+        "psr-0": {
+            "PhonegapBuildApi": ""
+        }
     }
 }
