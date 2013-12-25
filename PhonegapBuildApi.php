@@ -1,7 +1,5 @@
 <?php
 
-namespace PhonegapBuildApi;
-
 /**
  * TODO:
  * 1) Test key methods
