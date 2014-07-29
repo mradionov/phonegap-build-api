@@ -810,7 +810,7 @@ class PhonegapBuildApi
             // extract files, pass them separately
             $files = array();
             foreach ($options as $key => $value) {
-                if (! empty($value) && $value[0] === '@') {
+                if (! empty($value) && ! is_array($value) && $value[0] === '@') {
                     $files[$key] = $value;
                     unset($options[$key]);
                 }
