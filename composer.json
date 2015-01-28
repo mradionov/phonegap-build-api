@@ -1,5 +1,5 @@
 {
-    "name": "micrddrgn/phonegap-build-api",
+    "name": "mradionov/phonegap-build-api",
     "description": "PHP library to interact with Phonegap Build API",
     "type": "library",
     "keywords": [
@@ -15,8 +15,8 @@
         }
     ],
     "support": {
-        "source": "https://github.com/micrddrgn/phonegap-build-api",
-        "issues": "https://github.com/micrddrgn/phonegap-build-api/issues"
+        "source": "https://github.com/mradionov/phonegap-build-api",
+        "issues": "https://github.com/mradionov/phonegap-build-api/issues"
     },
     "autoload": {
         "psr-0": {
