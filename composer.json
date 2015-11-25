@@ -1,6 +1,7 @@
 {
     "name": "mradionov/phonegap-build-api",
     "description": "PHP library to interact with Phonegap Build API",
+    "version": "0.1.0",
     "type": "library",
     "keywords": [
         "phonegap",
