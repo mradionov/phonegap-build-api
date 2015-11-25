@@ -4,19 +4,19 @@
  * TODO:
  * 1) Test key methods
  * 2) Documentation
- * 
+ *
  * PHP library to interact with Phonegap Build API
- * 
+ *
  * The latest version of Phonegap for the time when library was developed - 3.1.0
  * Contains all methods the a presented in this version of API
- * 
+ *
  * Requires CURL PHP extension to be installed and enabled
- * 
- * Original API documentation: 
+ *
+ * Original API documentation:
  * @link(http://docs.build.phonegap.com/en_US/3.1.0/developer_api_api.md.html)
  *
  * Shortcuts for links in annotations:
- * 
+ *
  * {docs_read_api}
  * @link(http://docs.build.phonegap.com/en_US/3.1.0/developer_api_read.md.html)
  *
@@ -51,7 +51,7 @@ class PhonegapBuildApi
 
     /**
      * Username
-     * 
+     *
      * May stay empty if using token
      *
      * @var string
@@ -196,7 +196,7 @@ class PhonegapBuildApi
      * Get user's application by application id
      *
      * @link({docs_api_read}, #_get_https_build_phonegap_com_api_v1_apps_id)
-     * 
+     *
      * @param mixed: int | string $applicationId
      *
      * @return mixed: array on success | false on fail
@@ -224,7 +224,7 @@ class PhonegapBuildApi
      * Get user's application download url for platform by application id
      *
      * @link({docs_api_read}, #_get_https_build_phonegap_com_api_v1_apps_id_platform)
-     * 
+     *
      * @param mixed: int | string $applicationId
      * @param string $platform - platform name ('android', 'ios', ...')
      *
@@ -347,7 +347,7 @@ class PhonegapBuildApi
             'create_method' => 'file',
             'file' => $this->file($source),
         ));
-        
+
         return $this->createApplication($options);
     }
 
@@ -355,7 +355,7 @@ class PhonegapBuildApi
      * Update application
      *
      * @link({docs_api_write}, #_put_https_build_phonegap_com_api_v1_apps_id)
-     * 
+     *
      * @param mixed: int | string $applicationId
      * @param array $options - additional options, see details in API docs
      *
@@ -681,7 +681,7 @@ class PhonegapBuildApi
 
     /**
      * Check whether last request was successful
-     * 
+     *
      * @return bool
      */
     public function success()
@@ -735,6 +735,22 @@ class PhonegapBuildApi
     protected function file($source)
     {
         return '@' . realpath($source);
+    }
+
+    /**
+     * PHP 5.5 introduced a CurlFile object that deprecates the old @filename syntax
+     * See: https://wiki.php.net/rfc/curl-file-upload
+     *
+     * @param string $file constructed file string
+     *
+     * @return mixed instance of CurlFile or string
+     */
+    protected function toCurlFile($file) {
+        if (function_exists('curl_file_create')) {
+            // remove first @ character
+            return curl_file_create(substr($file, 1));
+        }
+        return $file;
     }
 
     /**
@@ -811,7 +827,7 @@ class PhonegapBuildApi
             $files = array();
             foreach ($options as $key => $value) {
                 if (! empty($value) && ! is_array($value) && $value[0] === '@') {
-                    $files[$key] = $value;
+                    $files[$key] = $this->toCurlFile($value);
                     unset($options[$key]);
                 }
             }
@@ -829,7 +845,7 @@ class PhonegapBuildApi
         }
 
         $response = curl_exec($handle);
-        
+
         if (curl_errno($handle)) {
             $this->setError(curl_error($handle));
             curl_close($handle);
