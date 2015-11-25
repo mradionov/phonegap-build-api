@@ -1,32 +1,30 @@
 <?php
 
 /**
- * TODO:
- * 1) Test key methods
- * 2) Documentation
- *
  * PHP library to interact with Phonegap Build API
  *
- * The latest version of Phonegap for the time when library was developed - 3.1.0
+ * The latest version of Phonegap for the time when library was developed 3.1.0
+ * Anyways, it has to work with the latest versions of Cordova (Phonegap) 5+.
  * Contains all methods the a presented in this version of API
  *
  * Requires CURL PHP extension to be installed and enabled
  *
  * Original API documentation:
- * @link(http://docs.build.phonegap.com/en_US/3.1.0/developer_api_api.md.html)
+ * @link http://docs.build.phonegap.com/en_US/developer_api_api.md.html
+ * @link http://docs.build.phonegap.com/en_US/developer_api_read.md.html
+ * @link http://docs.build.phonegap.com/en_US/developer_api_write.md.html
  *
- * Shortcuts for links in annotations:
- *
- * {docs_read_api}
- * @link(http://docs.build.phonegap.com/en_US/3.1.0/developer_api_read.md.html)
- *
- * {docs_write_api}
- * @link(http://docs.build.phonegap.com/en_US/3.1.0/developer_api_write.md.html)
+ * @author Michael Radionov <https://github.com/mradionov>
+ * @link https://github.com/mradionov/phonegap-build-api
+ * @license MIT
  */
 class PhonegapBuildApi
 {
     const IOS = 'ios';
     const ANDROID = 'android';
+
+    const ROLE_TESTER = 'tester'; // read-only
+    const ROLE_DEV = 'dev'; // read and write
 
     /**
      * Api Endpoint
@@ -171,7 +169,7 @@ class PhonegapBuildApi
     /**
      * Get user's profile information
      *
-     * @link({docs_read_api}, #_get_https_build_phonegap_com_api_v1_me)
+     * @link http://docs.build.phonegap.com/en_US/developer_api_read.md.html#_get_https_build_phonegap_com_api_v1_me
      *
      * @return mixed: array on success | false on fail
      */
@@ -183,7 +181,7 @@ class PhonegapBuildApi
     /**
      * Get user's applications
      *
-     * @link({docs_api_read}, #_get_https_build_phonegap_com_api_v1_apps)
+     * @link http://docs.build.phonegap.com/en_US/developer_api_read.md.html#_get_https_build_phonegap_com_api_v1_apps
      *
      * @return mixed: array on success | false on fail
      */
@@ -195,7 +193,7 @@ class PhonegapBuildApi
     /**
      * Get user's application by application id
      *
-     * @link({docs_api_read}, #_get_https_build_phonegap_com_api_v1_apps_id)
+     * @link http://docs.build.phonegap.com/en_US/developer_api_read.md.html#_get_https_build_phonegap_com_api_v1_apps_id
      *
      * @param mixed: int | string $applicationId
      *
@@ -209,7 +207,7 @@ class PhonegapBuildApi
     /**
      * Get user's application icon url by application id
      *
-     * @link({docs_api_read}, #_get_https_build_phonegap_com_api_v1_apps_id_icon)
+     * @link http://docs.build.phonegap.com/en_US/developer_api_read.md.html#_get_https_build_phonegap_com_api_v1_apps_id_icon
      *
      * @param mixed: int | string $applicationId
      *
@@ -223,7 +221,7 @@ class PhonegapBuildApi
     /**
      * Get user's application download url for platform by application id
      *
-     * @link({docs_api_read}, #_get_https_build_phonegap_com_api_v1_apps_id_platform)
+     * @link http://docs.build.phonegap.com/en_US/developer_api_read.md.html#_get_https_build_phonegap_com_api_v1_apps_id_platform
      *
      * @param mixed: int | string $applicationId
      * @param string $platform - platform name ('android', 'ios', ...')
@@ -238,7 +236,7 @@ class PhonegapBuildApi
     /**
      * Get user's keys
      *
-     * @link({docs_api_read}, #_get_https_build_phonegap_com_api_v1_keys)
+     * @link http://docs.build.phonegap.com/en_US/developer_api_read.md.html#_get_https_build_phonegap_com_api_v1_keys
      *
      * @return mixed: array on success | false on fail
      */
@@ -250,7 +248,7 @@ class PhonegapBuildApi
     /**
      * Get user's keys for platform
      *
-     * @link({docs_api_read}, #_get_https_build_phonegap_com_api_v1_keys_platform)
+     * @link http://docs.build.phonegap.com/en_US/developer_api_read.md.html#_get_https_build_phonegap_com_api_v1_keys_platform
      *
      * @param string $platform - platform name ('android', 'ios', ...')
      *
@@ -264,7 +262,7 @@ class PhonegapBuildApi
     /**
      * Get user's key for platform by key id
      *
-     * @link({docs_api_read}, #_get_https_build_phonegap_com_api_v1_keys_platform_id)
+     * @link http://docs.build.phonegap.com/en_US/developer_api_read.md.html#_get_https_build_phonegap_com_api_v1_keys_platform_id
      *
      * @param string $platform - platform name ('android', 'ios', ...')
      * @param mixed: int | string $keyId
@@ -283,8 +281,7 @@ class PhonegapBuildApi
     /**
      * Create application
      *
-     * @link({docs_api_write}, #_post_https_build_phonegap_com_api_v1_apps)
-     *
+     * @link http://docs.build.phonegap.com/en_US/developer_api_write.md.html#_post_https_build_phonegap_com_api_v1_apps
      * @param array $options - additional options, see details in API docs
      *
      * @return mixed: array on success | false on fail
@@ -314,7 +311,7 @@ class PhonegapBuildApi
     /**
      * Create application using GitHub repository
      *
-     * @link({docs_api_write}, #_post_https_build_phonegap_com_api_v1_apps)
+     * @link http://docs.build.phonegap.com/en_US/developer_api_write.md.html#_post_https_build_phonegap_com_api_v1_apps
      *
      * @param string $source - GitHub repository
      * @param array $options - additional options, see details in API docs
@@ -334,7 +331,7 @@ class PhonegapBuildApi
     /**
      * Create application from file
      *
-     * @link({docs_api_write}, #_post_https_build_phonegap_com_api_v1_apps)
+     * @link http://docs.build.phonegap.com/en_US/developer_api_write.md.html#_post_https_build_phonegap_com_api_v1_apps
      *
      * @param string $source - file path
      * @param array $options - additional options, see details in API docs
@@ -354,7 +351,7 @@ class PhonegapBuildApi
     /**
      * Update application
      *
-     * @link({docs_api_write}, #_put_https_build_phonegap_com_api_v1_apps_id)
+     * @link http://docs.build.phonegap.com/en_US/developer_api_write.md.html#_put_https_build_phonegap_com_api_v1_apps_id
      *
      * @param mixed: int | string $applicationId
      * @param array $options - additional options, see details in API docs
@@ -371,7 +368,7 @@ class PhonegapBuildApi
      *
      * No need to pass repository as it was set when application had been created
      *
-     * @link({docs_api_write}, #_put_https_build_phonegap_com_api_v1_apps_id)
+     * @link http://docs.build.phonegap.com/en_US/developer_api_write.md.html#_put_https_build_phonegap_com_api_v1_apps_id
      *
      * @param mixed: int | string $applicationId
      * @param array $options - additional options, see details in API docs
@@ -390,7 +387,7 @@ class PhonegapBuildApi
     /**
      * Update application from file
      *
-     * @link({docs_api_write}, #_put_https_build_phonegap_com_api_v1_apps_id)
+     * @link http://docs.build.phonegap.com/en_US/developer_api_write.md.html#_put_https_build_phonegap_com_api_v1_apps_id
      *
      * @param mixed: int | string $applicationId
      * @param string $source - file path
@@ -410,7 +407,7 @@ class PhonegapBuildApi
     /**
      * Update application icon
      *
-     * @link({docs_api_write}, #_post_https_build_phonegap_com_api_v1_apps_id_icon)
+     * @link http://docs.build.phonegap.com/en_US/developer_api_write.md.html#_post_https_build_phonegap_com_api_v1_apps_id_icon
      *
      * @param mixed: int | string $applicationId
      * @param string $source - png icon file path
@@ -427,7 +424,7 @@ class PhonegapBuildApi
     /**
      * Start building application
      *
-     * @link({docs_api_write}, #_post_https_build_phonegap_com_api_v1_apps_id_build)
+     * @link http://docs.build.phonegap.com/en_US/developer_api_write.md.html#_post_https_build_phonegap_com_api_v1_apps_id_build
      *
      * @param mixed: int | string $applicationId
      * @param array | string $platforms - platform name ('android', 'ios', ...')
@@ -450,7 +447,7 @@ class PhonegapBuildApi
     /**
      * Start building application for specified platform
      *
-     * @link({docs_api_write}, #_post_https_build_phonegap_com_api_v1_apps_id_build_platform)
+     * @link http://docs.build.phonegap.com/en_US/developer_api_write.md.html#_post_https_build_phonegap_com_api_v1_apps_id_build_platform
      *
      * @param mixed: int | string $applicationId
      * @param mixed: string | array $platform - platform name ('android', 'ios', ...')
@@ -465,7 +462,7 @@ class PhonegapBuildApi
     /**
      * Add collaborator
      *
-     * @link({docs_api_write}, #_post_https_build_phonegap_com_api_v1_apps_id_collaborators)
+     * @link http://docs.build.phonegap.com/en_US/developer_api_write.md.html#_post_https_build_phonegap_com_api_v1_apps_id_collaborators
      *
      * @param mixed: int | string $applicationId
      * @param array $options - additional options, see details in API docs
@@ -476,7 +473,7 @@ class PhonegapBuildApi
     {
         $defaults = array(
             'email' => '',
-            'role' => 'tester', // 'dev'
+            'role' => self::ROLE_TESTER, // self::ROLE_DEV
         );
 
         $options = array_merge($defaults, $options);
@@ -487,7 +484,7 @@ class PhonegapBuildApi
     /**
      * Update collaborator
      *
-     * @link({docs_api_write}, #_put_https_build_phonegap_com_api_v1_apps_id_collaborators_id)
+     * @link http://docs.build.phonegap.com/en_US/developer_api_write.md.html#_put_https_build_phonegap_com_api_v1_apps_id_collaborators_id
      *
      * @param mixed: int | string $applicationId
      * @param mixed: int | string $collaboratorId
@@ -498,7 +495,7 @@ class PhonegapBuildApi
     public function updateCollaborator($applicationId, $collaboratorId, $options = array())
     {
         $defaults = array(
-            'role' => 'tester', // 'dev'
+            'role' => self::ROLE_TESTER, // self::ROLE_DEV
         );
 
         $options = array_merge($defaults, $options);
@@ -511,7 +508,7 @@ class PhonegapBuildApi
      *
      * Better use function for specified platforms, cause it has some values restrictions
      *
-     * @link({docs_api_write}, #_post_https_build_phonegap_com_api_v1_keys_platform)
+     * @link http://docs.build.phonegap.com/en_US/developer_api_write.md.html#_post_https_build_phonegap_com_api_v1_keys_platform
      *
      * @param string $platform - platform name ('android', 'ios', ...')
      * @param array $options - additional options, see details in API docs
@@ -526,7 +523,7 @@ class PhonegapBuildApi
     /**
      * Add key for android
      *
-     * @link({docs_api_write}, #_post_https_build_phonegap_com_api_v1_keys_platform)
+     * @link http://docs.build.phonegap.com/en_US/developer_api_write.md.html#_post_https_build_phonegap_com_api_v1_keys_platform
      *
      * @param string $title - key title
      * @param string $keystore - keystore file
@@ -552,7 +549,7 @@ class PhonegapBuildApi
     /**
      * Add key for ios
      *
-     * @link({docs_api_write}, #_post_https_build_phonegap_com_api_v1_keys_platform)
+     * @link http://docs.build.phonegap.com/en_US/developer_api_write.md.html#_post_https_build_phonegap_com_api_v1_keys_platform
      *
      * @param string $title - key title
      * @param string $cert - p12 certificate file
@@ -580,7 +577,7 @@ class PhonegapBuildApi
      *
      * Better use function for specified platforms, cause it has some values restrictions
      *
-     * @link({docs_api_write}, #_put_https_build_phonegap_com_api_v1_keys_platform)
+     * @link http://docs.build.phonegap.com/en_US/developer_api_write.md.html#_put_https_build_phonegap_com_api_v1_keys_platform
      *
      * @param string $platform
      * @param mixed: int | string $keyId
@@ -596,7 +593,7 @@ class PhonegapBuildApi
     /**
      * Update / unlock key for ios
      *
-     * @link({docs_api_write}, #_put_https_build_phonegap_com_api_v1_keys_platform)
+     * @link http://docs.build.phonegap.com/en_US/developer_api_write.md.html#_put_https_build_phonegap_com_api_v1_keys_platform
      *
      * @param mixed: int | string $keyId
      * @param string $password - key password
@@ -613,7 +610,7 @@ class PhonegapBuildApi
     /**
      * Update / unlock key for android
      *
-     * @link({docs_api_write}, #_put_https_build_phonegap_com_api_v1_keys_platform)
+     * @link http://docs.build.phonegap.com/en_US/developer_api_write.md.html#_put_https_build_phonegap_com_api_v1_keys_platform
      *
      * @param mixed: int | string $keyId
      * @param string $keyPw - key password
@@ -634,7 +631,7 @@ class PhonegapBuildApi
     /**
      * Delete application
      *
-     * @link({docs_api_write}, #_delete_https_build_phonegap_com_api_v1_apps_id)
+     * @link http://docs.build.phonegap.com/en_US/developer_api_write.md.html#_delete_https_build_phonegap_com_api_v1_apps_id
      *
      * @param mixed: int | string $applicationId
      *
@@ -648,7 +645,7 @@ class PhonegapBuildApi
     /**
      * Delete collaborator
      *
-     * @link({docs_api_write}, #_delete_https_build_phonegap_com_api_v1_apps_id_collaborators_id)
+     * @link http://docs.build.phonegap.com/en_US/developer_api_write.md.html#_delete_https_build_phonegap_com_api_v1_apps_id_collaborators_id
      *
      * @param mixed: int | string $applicationId
      * @param mixed: int | string $collaboratorId
@@ -663,7 +660,7 @@ class PhonegapBuildApi
     /**
      * Delete key for platform
      *
-     * @link({docs_api_write}, #_delete_https_build_phonegap_com_api_v1_keys_platform_id)
+     * @link http://docs.build.phonegap.com/en_US/developer_api_write.md.html#_delete_https_build_phonegap_com_api_v1_keys_platform_id
      *
      * @param string $platform - platform name ('android', 'ios', ...')
      * @param mixed: int | string $keyId
