@@ -804,7 +804,7 @@ class PhonegapBuildApi
 
         if ($this->token) {
             // if using token - add it to final request url
-            $url .= '?auth_token=' . $this->token;
+            $url .= '?access_token=' . $this->token;
         } else {
             // if usting username and password - pass then as curl option
             curl_setopt($handle, CURLOPT_USERPWD, $this->username . ':' . $this->password);
