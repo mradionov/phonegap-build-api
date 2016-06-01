@@ -50,7 +50,7 @@ class PhonegapBuildApi
     /**
      * Username
      *
-     * May stay empty if using token
+     * May stay empty if using simple token or access token
      *
      * @var string
      */
@@ -59,20 +59,29 @@ class PhonegapBuildApi
     /**
      * Password
      *
-     * May stay empty if using token
+     * May stay empty if using simple token or access token
      *
      * @var string
      */
     protected $password = '';
 
     /**
-     * Authentication token
+     * Simple authentication token, taken from PG account
      *
-     * May stay empty if using username and password
+     * May stay empty if using username + password or access token
      *
      * @var string
      */
     protected $token = '';
+
+    /**
+     * OAuth2 access token
+     *
+     * May stay empty if using username + password or simple token
+     *
+     * @var string
+     */
+    protected $accessToken = '';
 
     /**
      * Check whether a request was successful
@@ -128,9 +137,9 @@ class PhonegapBuildApi
     }
 
     /**
-     * Set username and password for authentication, if set
+     * Set username and password for authentication
      *
-     * Token will be cleared
+     * Tokens will be cleared
      *
      * @param string $username
      * @param string $password
@@ -142,13 +151,14 @@ class PhonegapBuildApi
         $this->username = $username;
         $this->password = $password;
         $this->token = '';
+        $this->accessToken = '';
         return $this;
     }
 
     /**
-     * Set token for authentication
+     * Set simple token for authentication
      *
-     * Username and password will be cleared, if set
+     * Username + password and access token will be cleared
      *
      * @param string $token
      *
@@ -159,6 +169,25 @@ class PhonegapBuildApi
         $this->token = $token;
         $this->username = '';
         $this->password = '';
+        $this->accessToken = '';
+        return $this;
+    }
+
+    /**
+     * Set access token for OAuth2 authentication
+     *
+     * Username + password and simple token will be cleared
+     *
+     * @param string $accessToken
+     *
+     * @return PhonegapBuildApi
+     */
+    public function setAccessToken($accessToken)
+    {
+        $this->accessToken = $accessToken;
+        $this->username = '';
+        $this->password = '';
+        $this->token = '';
         return $this;
     }
 
@@ -788,7 +817,10 @@ class PhonegapBuildApi
             return $this->setError('Unknown request method: ' . $method);
         }
 
-        if (! ($this->token || ($this->username && $this->password))) {
+        $isAuthorized = $this->accessToken || $this->token ||
+                        ($this->username && $this->password);
+
+        if (! $isAuthorized) {
             return $this->setError('Please provide token or username and password');
         }
 
@@ -802,11 +834,14 @@ class PhonegapBuildApi
 
         $handle = curl_init();
 
-        if ($this->token) {
-            // if using token - add it to final request url
+        if ($this->accessToken) {
+            // Access token is used in OAuth2 flow
+            $url .= '?access_token=' . $this->accessToken;
+        } else if ($this->token) {
+            // Auth token is taken from PG account
             $url .= '?auth_token=' . $this->token;
         } else {
-            // if usting username and password - pass then as curl option
+            // if using username and password - pass them as curl option
             curl_setopt($handle, CURLOPT_USERPWD, $this->username . ':' . $this->password);
         }
 

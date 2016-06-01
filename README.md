@@ -64,6 +64,18 @@ $api->setCredentials('email@example.com', 'password');
 $res = PhonegapBuildApi::factory('email@example.com', 'password')->getProfile();
 ```
 
+**Note**: Authentication token mentioned above is taken from Phonegap Build account -> "Edit account" page -> "Authentication token" section.
+
+To use access token from OAuth2 flow use a method setAccessToken():
+
+```php
+use PhonegapBuildApi;
+
+$api = new PhonegapBuildApi();
+
+$api->setAccessToken('d4f5g6');
+```
+
 #### Handle response
 
 Each API method returns response as associative array created from JSON (if successful). You can use method `success()` to check whether or not last request was successful. You can use method `error()` to get error message, if request failed.
