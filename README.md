@@ -111,20 +111,20 @@ $res = $api->getApplications();
 ##### GET /api/v1/apps/:id ([docs](http://docs.build.phonegap.com/en_US/developer_api_read.md.html#_get_https_build_phonegap_com_api_v1_apps_id))
 
 ```php
-$res = $api->getApplication(1488);
+$res = $api->getApplication(5);
 ```
 
 ##### GET /api/v1/apps/:id/icon ([docs](http://docs.build.phonegap.com/en_US/developer_api_read.md.html#_get_https_build_phonegap_com_api_v1_apps_id_icon))
 
 ```php
-$res = $api->getApplicationIcon(1488);
+$res = $api->getApplicationIcon(5);
 ```
 
 ##### GET /api/v1/apps/:id/:platform ([docs](http://docs.build.phonegap.com/en_US/developer_api_read.md.html#_get_https_build_phonegap_com_api_v1_apps_id_platform))
 
 ```php
-$res = $api->downloadApplicationPlatform(1488, PhonegapBuildApi::IOS);
-$res = $api->downloadApplicationPlatform(1488, PhonegapBuildApi::ANDROID);
+$res = $api->downloadApplicationPlatform(5, PhonegapBuildApi::IOS);
+$res = $api->downloadApplicationPlatform(5, PhonegapBuildApi::ANDROID);
 ```
 
 ##### GET /api/v1/keys ([docs](http://docs.build.phonegap.com/en_US/developer_api_read.md.html#_get_https_build_phonegap_com_api_v1_keys))
@@ -143,8 +143,8 @@ $res = $api->getKeysPlatform(PhonegapBuildApi::ANDROID);
 ##### GET /api/v1/keys/:platform/:id ([docs](http://docs.build.phonegap.com/en_US/developer_api_read.md.html#_get_https_build_phonegap_com_api_v1_keys_platform_id))
 
 ```php
-$res = $api->getKeyPlatform(PhonegapBuildApi::IOS, 228);
-$res = $api->getKeyPlatform(PhonegapBuildApi::ANDROID, 228);
+$res = $api->getKeyPlatform(PhonegapBuildApi::IOS, 3);
+$res = $api->getKeyPlatform(PhonegapBuildApi::ANDROID, 3);
 ```
 
 ##### POST /api/v1/apps ([docs](http://docs.build.phonegap.com/en_US/developer_api_write.md.html#_post_https_build_phonegap_com_api_v1_apps))
@@ -158,7 +158,7 @@ $res = $api->createApplication(array(
   'debug' => false,
   'keys' => array(
     'ios' => array(
-      'id' => 228,
+      'id' => 3,
       'password' => 'key_password'
     ),
   ),
@@ -190,7 +190,7 @@ $res = $api->createApplicationFromFile('/path/to/archive.zip', array(
 ##### PUT /api/v1/apps/:id ([docs](http://docs.build.phonegap.com/en_US/developer_api_write.md.html#_put_https_build_phonegap_com_api_v1_apps_id))
 
 ```php
-$res = $api->updateApplication(1488, array(
+$res = $api->updateApplication(5, array(
   'title' => 'Phonegap Application',
   // better use methods below or see docs for all options
 ));
@@ -199,7 +199,7 @@ $res = $api->updateApplication(1488, array(
 From remote repo (preferable):
 
 ```php
-$res = $api->updateApplicationFromRepo(1488, array(
+$res = $api->updateApplicationFromRepo(5, array(
   'title' => 'Phonegap Application',
   // see docs for all options
 ));
@@ -208,7 +208,7 @@ $res = $api->updateApplicationFromRepo(1488, array(
 From file (preferable):
 
 ```php
-$res = $api->updateApplicationFromFile(1488, '/path/to/archive.zip', array(
+$res = $api->updateApplicationFromFile(5, '/path/to/archive.zip', array(
   'title' => 'Phonegap Application',
   // see docs for all options
 ));
@@ -217,13 +217,13 @@ $res = $api->updateApplicationFromFile(1488, '/path/to/archive.zip', array(
 ##### POST /api/v1/apps/:id/icon ([docs](http://docs.build.phonegap.com/en_US/developer_api_write.md.html#_post_https_build_phonegap_com_api_v1_apps_id_icon))
 
 ```php
-$res = $api->updateApplicationIcon(1488, '/path/to/icon.png');
+$res = $api->updateApplicationIcon(5, '/path/to/icon.png');
 ```
 
 ##### POST /api/v1/apps/:id/build ([docs](http://docs.build.phonegap.com/en_US/developer_api_write.md.html#_post_https_build_phonegap_com_api_v1_apps_id_build))
 
 ```php
-$res = $api->buildApplication(1488, array(
+$res = $api->buildApplication(5, array(
   PhonegapBuildApi::IOS, PhonegapBuildApi::ANDROID
 ));
 ```
@@ -231,14 +231,14 @@ $res = $api->buildApplication(1488, array(
 ##### POST /api/v1/apps/:id/build/:platform ([docs](http://docs.build.phonegap.com/en_US/developer_api_write.md.html#_post_https_build_phonegap_com_api_v1_apps_id_build_platform))
 
 ```php
-$res = $api->buildApplicationPlatform(1488, PhonegapBuildApi::IOS);
-$res = $api->buildApplicationPlatform(1488, PhonegapBuildApi::ANDROID);
+$res = $api->buildApplicationPlatform(5, PhonegapBuildApi::IOS);
+$res = $api->buildApplicationPlatform(5, PhonegapBuildApi::ANDROID);
 ```
 
 ##### POST /api/v1/apps/:id/collaborators ([docs](http://docs.build.phonegap.com/en_US/developer_api_write.md.html#_post_https_build_phonegap_com_api_v1_apps_id_collaborators))
 
 ```php
-$res = $api->addCollaborator(1488, array(
+$res = $api->addCollaborator(5, array(
   'email' => 'collab@example.com',
   'role' => PhonegapBuildApi::ROLE_TESTER, // PhonegapBuildApi::ROLE_DEV
   // see docs for all options
@@ -248,7 +248,7 @@ $res = $api->addCollaborator(1488, array(
 ##### PUT /api/v1/apps/:id/collaborators/:id ([docs](http://docs.build.phonegap.com/en_US/developer_api_write.md.html#_put_https_build_phonegap_com_api_v1_apps_id_collaborators_id))
 
 ```php
-$res = $api->updateCollaborator(1488, 69, array(
+$res = $api->updateCollaborator(5, 7, array(
   'role' => PhonegapBuildApi::ROLE_TESTER, // PhonegapBuildApi::ROLE_DEV
   // see docs for all options
 ));
@@ -285,10 +285,10 @@ $res = $api->addKeyIos('Key Title', '/path/to/key.p12', '/path/to/key.mobileprov
 ##### PUT /api/v1/keys/:platform/:id ([docs](http://docs.build.phonegap.com/en_US/developer_api_write.md.html#_put_https_build_phonegap_com_api_v1_keys_platform))
 
 ```php
-$res = $api->updateKeyPlatform(PhonegapBuildApi::IOS, 228, array(
+$res = $api->updateKeyPlatform(PhonegapBuildApi::IOS, 3, array(
   // better use methods below or see docs for all options
 ));
-$res = $api->updateKeyPlatform(PhonegapBuildApi::ANDROID, 228, array(
+$res = $api->updateKeyPlatform(PhonegapBuildApi::ANDROID, 3, array(
   // better use methods below or see docs for all options
 ));
 ```
@@ -296,30 +296,30 @@ $res = $api->updateKeyPlatform(PhonegapBuildApi::ANDROID, 228, array(
 Android specific (preferable):
 
 ```php
-$res = $api->updateKeyIos(228, 'key_password');
+$res = $api->updateKeyIos(3, 'key_password');
 ```
 
 iOS specific (preferable):
 
 ```php
-$res = $api->updateKeyAndroid(228, 'key_password', 'keystore_password');
+$res = $api->updateKeyAndroid(3, 'key_password', 'keystore_password');
 ```
 
 ##### DELETE /api/v1/apps/:id ([docs](http://docs.build.phonegap.com/en_US/developer_api_write.md.html#_delete_https_build_phonegap_com_api_v1_apps_id))
 
 ```php
-$res = $api->deleteApplication(1488);
+$res = $api->deleteApplication(5);
 ```
 
 ##### DELETE /api/v1/apps/:id/collaborators/:id ([docs](http://docs.build.phonegap.com/en_US/developer_api_write.md.html#_delete_https_build_phonegap_com_api_v1_apps_id_collaborators_id))
 
 ```php
-$res = $api->deleteCollaborator(1488, 69);
+$res = $api->deleteCollaborator(5, 7);
 ```
 
 ##### DELETE /api/v1/keys/:platform/:id ([docs](http://docs.build.phonegap.com/en_US/developer_api_write.md.html#_delete_https_build_phonegap_com_api_v1_keys_platform_id))
 
 ```php
-$res = $api->deleteKeyPlatform(PhonegapBuildApi::IOS, 228);
-$res = $api->deleteKeyPlatform(PhonegapBuildApi::ANDROID, 228);
+$res = $api->deleteKeyPlatform(PhonegapBuildApi::IOS, 3);
+$res = $api->deleteKeyPlatform(PhonegapBuildApi::ANDROID, 3);
 ```
